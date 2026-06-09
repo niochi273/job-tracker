@@ -1,7 +1,7 @@
 import { Card } from "./ui/card";
-import { Badge } from "./ui/badge";
 import { Application } from "@/types/application";
 import { format } from "date-fns";
+import StatusBadge from "./StatusBadge";
 
 export default function ApplicationCard({ app }: { app: Application }) {
   return (
@@ -9,7 +9,7 @@ export default function ApplicationCard({ app }: { app: Application }) {
       <Card className="p-4 flex flex-col gap-3">
         <div className="flex flex-row gap-5 items-center">
           <h2 className="text-3xl font-medium">{app.company}</h2>
-          <Badge className="mt-1">{app.status}</Badge>
+          <StatusBadge status={app.status} />
           <span className="ml-auto text-muted-foreground">
             {format(app.appliedAt, "d MMM yyyy")}
           </span>
