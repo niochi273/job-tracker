@@ -2,7 +2,9 @@ import ApplicationCard from "@/components/ApplicationCard";
 import { db } from "@/db";
 
 export default async function ApplicationsPage() {
-  const applications = await db.query.applications.findMany();
+  const applications = await db.query.applications.findMany({
+    orderBy: (apps, { desc }) => desc(apps.appliedAt),
+  });
 
   return (
     <main className="w-full mx-auto p-6">
@@ -12,11 +14,17 @@ export default async function ApplicationsPage() {
       </div>
 
       <div className="flex flex-col gap-3 ">
-        {applications.map((app) => (
-          <div key={app.id} className="relative">
-            <ApplicationCard app={app} />
+        {applications.length === 0 ? (
+          <p className="text-muted-foreground text-center py-12">
+            No applications yet. Add your first one to get started.
+          </p>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {applications.map((app) => (
+              <ApplicationCard key={app.id} app={app} />
+            ))}
           </div>
-        ))}
+        )}
       </div>
     </main>
   );

@@ -50,17 +50,15 @@ export default async function ApplicationDetailPage({
             </div>
             <p className="text-lg text-muted-foreground">{app.position}</p>
           </div>
-          {app.jobUrl && (
-            <a
-              href={app.jobUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cn(buttonVariants({ variant: "outline" }), "ml-auto")}
-            >
-              View job posting
-              <ExternalLink className="size-4" />
-            </a>
-          )}
+          <a
+            href={app.jobUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(buttonVariants({ variant: "outline" }), "ml-auto")}
+          >
+            View job posting
+            <ExternalLink className="size-4" />
+          </a>
         </header>
 
         <Separator className="my-4" />

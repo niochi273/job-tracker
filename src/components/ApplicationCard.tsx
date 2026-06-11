@@ -25,16 +25,14 @@ export default function ApplicationCard({ app }: { app: Application }) {
           <p className="capitalize">{app.workType}</p>
           {app.location != null && <p>{app.location}</p>}
         </CardContent>
-        {app.jobUrl && (
-          <a
-            href={app.jobUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-violet-400 hover:underline absolute bottom-3 right-6"
-          >
-            View job posting →
-          </a>
-        )}
+        <a
+          href={app.jobUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm text-violet-400 hover:underline absolute bottom-3 right-6"
+        >
+          View job posting →
+        </a>
       </Card>
     </>
   );
