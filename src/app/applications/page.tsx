@@ -1,8 +1,8 @@
 import ApplicationCard from "@/components/ApplicationCard";
-import { placeholderApplications } from "@/lib/placeholder-data";
+import { db } from "@/db";
 
-export default function ApplicationsPage() {
-  const applications = placeholderApplications;
+export default async function ApplicationsPage() {
+  const applications = await db.query.applications.findMany();
 
   return (
     <main className="w-full mx-auto p-6">

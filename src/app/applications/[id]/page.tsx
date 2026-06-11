@@ -1,4 +1,3 @@
-import { placeholderApplications } from "@/lib/placeholder-data";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -15,6 +14,9 @@ import {
 import { Separator } from "@/components/ui/separator";
 import StatusBadge from "@/components/StatusBadge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { db } from "@/db";
+import { applications } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 export default async function ApplicationDetailPage({
   params,
@@ -22,7 +24,9 @@ export default async function ApplicationDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const app = placeholderApplications.find((a) => a.id === id);
+  const app = await db.query.applications.findFirst({
+    where: eq(applications.id, id),
+  });
 
   if (!app) {
     notFound();
