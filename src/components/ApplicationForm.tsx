@@ -1,0 +1,126 @@
+"use client";
+
+import { useActionState } from "react";
+import {
+  createApplication,
+  type ActionState,
+} from "@/app/actions/applications";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const initialState: ActionState = {};
+
+export default function ApplicationForm() {
+  const [state, formAction, isPending] = useActionState(
+    createApplication,
+    initialState,
+  );
+
+  return (
+    <form action={formAction} className="flex flex-col gap-4 max-w-xl">
+      {/* Company */}
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="company">Company</Label>
+        <Input id="company" name="company" placeholder="Google" />
+        {state.errors?.company && (
+          <p className="text-sm text-red-400">{state.errors.company[0]}</p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="position">Position</Label>
+        <Input id="position" name="position" placeholder="Frontend developer" />
+        {state.errors?.position && (
+          <p className="text-sm text-red-400">{state.errors.position[0]}</p>
+        )}
+      </div>
+
+      <Select name="status">
+        <SelectTrigger>
+          <SelectValue placeholder="Select status" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="wishlist">Wishlist</SelectItem>
+          <SelectItem value="applied">Applied</SelectItem>
+          <SelectItem value="screening">Screening</SelectItem>
+          <SelectItem value="interview">Interview</SelectItem>
+          <SelectItem value="offer">Offer</SelectItem>
+          <SelectItem value="rejected">Rejected</SelectItem>
+          <SelectItem value="withdrawn">Withdrawn</SelectItem>
+        </SelectContent>
+      </Select>
+      {state.errors?.status && (
+        <p className="text-sm text-red-400">{state.errors.status[0]}</p>
+      )}
+
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="jobUrl">Job Url</Label>
+        <Input id="jobUrl" name="jobUrl" placeholder="https://..." />
+        {state.errors?.jobUrl && (
+          <p className="text-sm text-red-400">{state.errors.jobUrl[0]}</p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Select name="workType">
+          <SelectTrigger id="workType">
+            <SelectValue placeholder="Select work type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="remote">Remote</SelectItem>
+            <SelectItem value="hybrid">Hybrid</SelectItem>
+            <SelectItem value="onsite">Onsite</SelectItem>
+          </SelectContent>
+        </Select>
+        {state.errors?.workType && (
+          <p className="text-sm text-red-400">{state.errors.workType[0]}</p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="location">Location</Label>
+        <Input id="location" name="location" placeholder="Berlin, Germany" />
+        {state.errors?.location && (
+          <p className="text-sm text-red-400">{state.errors.location[0]}</p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="salaryRange">Salary range</Label>
+        <Input id="salaryRange" name="salaryRange" placeholder="€45k/year" />
+        {state.errors?.salaryRange && (
+          <p className="text-sm text-red-400">{state.errors.salaryRange[0]}</p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="deadline">Deadline</Label>
+        <Input id="deadline" name="deadline" type="date" />
+        {state.errors?.deadline && (
+          <p className="text-sm text-red-400">{state.errors.deadline[0]}</p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="notes">Notes</Label>
+        <Textarea id="notes" name="notes" placeholder="Your notes..." />
+        {state.errors?.notes && (
+          <p className="text-sm text-red-400">{state.errors.notes[0]}</p>
+        )}
+      </div>
+
+      <Button type="submit" disabled={isPending}>
+        {isPending ? "Creating..." : "Create application"}
+      </Button>
+    </form>
+  );
+}
