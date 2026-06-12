@@ -9,7 +9,11 @@ export default function DeleteButton({ id }: { id: string }) {
     <Button
       variant="destructive"
       size="sm"
-      onClick={() => deleteApplication(id)}
+      onClick={() => {
+        if (confirm("Delete this application?")) {
+          deleteApplication(id);
+        }
+      }}
     >
       <Trash2 className="size-4" />
       Delete

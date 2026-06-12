@@ -17,6 +17,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { db } from "@/db";
 import { applications } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import DeleteButton from "@/components/DeleteButton";
 
 export default async function ApplicationDetailPage({
   params,
@@ -130,6 +131,8 @@ export default async function ApplicationDetailPage({
               </CardContent>
             </Card>
           )}
+
+          <DeleteButton id={(await params).id} />
         </main>
       </div>
     </>

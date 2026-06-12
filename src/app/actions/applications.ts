@@ -63,4 +63,5 @@ export async function createApplication(
 export async function deleteApplication(id: string) {
   await db.delete(applications).where(eq(applications.id, id));
   revalidatePath("/applications");
+  redirect("/applications");
 }
