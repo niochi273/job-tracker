@@ -3,6 +3,7 @@
 import { db } from "@/db";
 import { applications } from "@/db/schema";
 import { applicationSchema } from "@/lib/validations/application";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import z from "zod";
@@ -57,4 +58,9 @@ export async function createApplication(
   // 4. обновить кеш и перенаправить
   revalidatePath("/applications");
   redirect("/applications");
+}
+
+export async function deleteApplication(id: string) {
+  await db.delete(applications).where(eq(applications.id, id));
+  revalidatePath("/applications");
 }
