@@ -65,3 +65,50 @@ export async function deleteApplication(id: string) {
   revalidatePath("/applications");
   redirect("/applications");
 }
+
+export async function updateApplication(
+  id: string,
+  prevState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const raw = {
+    company: formData.get("company"),
+    position: formData.get("position"),
+    status: formData.get("status"),
+    jobUrl: formData.get("jobUrl"),
+    workType: formData.get("workType"),
+    location: formData.get("location") || undefined,
+    salaryRange: formData.get("salaryRange") || undefined,
+    deadline: formData.get("deadline") || undefined,
+    notes: formData.get("notes") || undefined,
+  };
+
+  const result = applicationSchema.safeParse(raw);
+
+  if (!result.success) {
+    return {
+      errors: z.flattenError(result.error).fieldErrors,
+      message: "Validation failed",
+    };
+  }
+
+  const data = result.data;
+  await db
+    .update(applications)
+    .set({
+      company: data.company,
+      position: data.position,
+      status: data.status,
+      jobUrl: data.jobUrl,
+      workType: data.workType,
+      location: data.location ?? null,
+      salaryRange: data.salaryRange ?? null,
+      deadline: data.deadline ? new Date(data.deadline) : null,
+      notes: data.notes ?? null,
+    })
+    .where(eq(applications.id, id));
+
+  revalidatePath("/applications");
+  revalidatePath(`/applications/${id}`);
+  redirect(`/applications/${id}`);
+}
