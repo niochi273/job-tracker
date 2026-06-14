@@ -24,7 +24,6 @@ export default async function ApplicationsPage() {
     <main className="w-full mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Applications</h1>
-        {/* сюда позже кнопку "New Application" */}
       </div>
 
       {userApplications.length === 0 ? (

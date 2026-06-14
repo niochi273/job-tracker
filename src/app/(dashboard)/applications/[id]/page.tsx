@@ -142,7 +142,14 @@ export default async function ApplicationDetailPage({
             </Card>
           )}
 
-          <DeleteButton id={id} />
+          <div className="flex gap-2 mt-6">
+            <Link href={`/applications/${id}/edit`}>
+              <Button variant="outline" size="sm">
+                Edit
+              </Button>
+            </Link>
+            <DeleteButton id={id} />
+          </div>
         </main>
       </div>
     </>
