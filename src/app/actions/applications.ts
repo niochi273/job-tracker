@@ -2,9 +2,11 @@
 
 import { db } from "@/db";
 import { applications } from "@/db/schema";
+import { auth } from "@/lib/auth";
 import { applicationSchema } from "@/lib/validations/application";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import z from "zod";
 
@@ -17,6 +19,11 @@ export async function createApplication(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) {
+    redirect("/login");
+  }
+
   // 1. собрать данные из формы
   const raw = {
     company: formData.get("company"),
@@ -43,6 +50,7 @@ export async function createApplication(
   // 3. записать в базу
   const data = result.data;
   await db.insert(applications).values({
+    userId: session.user.id,
     company: data.company,
     position: data.position,
     status: data.status,
@@ -61,7 +69,20 @@ export async function createApplication(
 }
 
 export async function deleteApplication(id: string) {
-  await db.delete(applications).where(eq(applications.id, id));
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) {
+    redirect("/login");
+  }
+
+  await db
+    .delete(applications) // ← таблица
+    .where(
+      and(
+        eq(applications.id, id), // эта подача
+        eq(applications.userId, session.user.id), // И принадлежит юзеру
+      ),
+    );
+
   revalidatePath("/applications");
   redirect("/applications");
 }
@@ -71,6 +92,11 @@ export async function updateApplication(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) {
+    redirect("/login");
+  }
+
   const raw = {
     company: formData.get("company"),
     position: formData.get("position"),
@@ -106,7 +132,12 @@ export async function updateApplication(
       deadline: data.deadline ? new Date(data.deadline) : null,
       notes: data.notes ?? null,
     })
-    .where(eq(applications.id, id));
+    .where(
+      and(
+        eq(applications.id, id), // эта подача
+        eq(applications.userId, session.user.id), // И принадлежит юзеру
+      ),
+    );
 
   revalidatePath("/applications");
   revalidatePath(`/applications/${id}`);

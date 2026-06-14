@@ -1,8 +1,19 @@
 import ApplicationCard from "@/components/ApplicationCard";
 import { db } from "@/db";
+import { applications } from "@/db/schema";
+import { auth } from "@/lib/auth";
+import { eq } from "drizzle-orm";
+import { headers } from "next/headers";
 
 export default async function ApplicationsPage() {
-  const applications = await db.query.applications.findMany({
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  // layout уже гарантирует, что session есть, но TS этого не знает:
+  if (!session) return null;
+
+  const userApplications = await db.query.applications.findMany({
+    where: eq(applications.userId, session.user.id), // ← фильтр по юзеру
     orderBy: (apps, { desc }) => desc(apps.appliedAt),
   });
 
@@ -14,13 +25,13 @@ export default async function ApplicationsPage() {
       </div>
 
       <div className="flex flex-col gap-3 ">
-        {applications.length === 0 ? (
+        {userApplications.length === 0 ? (
           <p className="text-muted-foreground text-center py-12">
             No applications yet. Add your first one to get started.
           </p>
         ) : (
           <div className="flex flex-col gap-3">
-            {applications.map((app) => (
+            {userApplications.map((app) => (
               <ApplicationCard key={app.id} app={app} />
             ))}
           </div>
