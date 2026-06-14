@@ -2,21 +2,31 @@ import ApplicationForm from "@/components/ApplicationForm";
 import { updateApplication } from "@/app/actions/applications";
 import { db } from "@/db";
 import { applications } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import { notFound } from "next/navigation";
+import { and, eq } from "drizzle-orm";
+import { notFound, redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export default async function EditApplicationPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) {
+    redirect("/login");
+  }
+
   const { id } = await params;
   const app = await db.query.applications.findFirst({
-    where: eq(applications.id, id),
+    where: and(
+      eq(applications.id, id),
+      eq(applications.userId, session.user.id), // ← только своя подача
+    ),
   });
 
   if (!app) {
-    notFound();
+    notFound(); // чужая подача → не найдётся → 404
   }
 
   const updateWithId = updateApplication.bind(null, app.id); // ← биндим id

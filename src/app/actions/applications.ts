@@ -16,7 +16,7 @@ export type ActionState = {
 };
 
 export async function createApplication(
-  prevState: ActionState,
+  _prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const session = await auth.api.getSession({ headers: await headers() });
