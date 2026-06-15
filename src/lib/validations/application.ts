@@ -36,11 +36,11 @@ export const applicationSchema = z
     notes: z.string().optional(),
   })
   .refine((data) => !data.salaryRange || !!data.currency, {
-    message: "Currency is required when salary is specified",
+    message: "Currency is required",
     path: ["currency"],
   })
   .refine((data) => !data.salaryRange || !!data.salaryPeriod, {
-    message: "Period is required when salary is specified",
+    message: "Period is required",
     path: ["salaryPeriod"],
   });
 
