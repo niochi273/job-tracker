@@ -15,6 +15,13 @@ import {
 } from "@/components/ui/select";
 import { Application } from "@/db/schema";
 import { format } from "date-fns";
+import {
+  DollarSign,
+  Euro,
+  JapaneseYen,
+  PoundSterling,
+  RussianRuble,
+} from "lucide-react";
 
 type Props = {
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
@@ -125,17 +132,83 @@ export default function ApplicationForm({
         )}
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="salaryRange">Salary range</Label>
-        <Input
-          id="salaryRange"
-          name="salaryRange"
+      <div className="flex gap-2 items-end">
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="salaryRange">Salary range</Label>
+          <Input
+            id="salaryRange"
+            name="salaryRange"
+            type="number"
+            defaultValue={
+              state.values?.salaryRange ?? defaultValues?.salaryRange ?? ""
+            }
+          />
+          {state.errors?.salaryRange && (
+            <p className="text-sm text-red-400">
+              {state.errors.salaryRange[0]}
+            </p>
+          )}
+        </div>
+        <Select
+          name="currency"
+          defaultValue={state.values?.currency ?? defaultValues?.currency ?? ""}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select currency" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="USD">
+              <div className="flex flex-row items-center gap-1">
+                <DollarSign />
+                <span>USD</span>
+              </div>
+            </SelectItem>
+            <SelectItem value="EUR">
+              <div className="flex flex-row items-center gap-1">
+                <Euro />
+                <span>EUR</span>
+              </div>
+            </SelectItem>
+            <SelectItem value="JPY">
+              <div className="flex flex-row items-center gap-1">
+                <JapaneseYen />
+                <span>JPY</span>
+              </div>
+            </SelectItem>
+            <SelectItem value="GBP">
+              <div className="flex flex-row items-center gap-1">
+                <PoundSterling />
+                <span>GBP</span>
+              </div>
+            </SelectItem>
+            <SelectItem value="RUB">
+              <div className="flex flex-row items-center gap-1">
+                <RussianRuble />
+                <span>RUB</span>
+              </div>
+            </SelectItem>
+          </SelectContent>
+        </Select>
+        {state.errors?.currency && (
+          <p className="text-sm text-red-400">{state.errors.currency[0]}</p>
+        )}
+        <Select
+          name="salaryPeriod"
           defaultValue={
-            state.values?.salaryRange ?? defaultValues?.salaryRange ?? ""
+            state.values?.salaryPeriod ?? defaultValues?.salaryPeriod ?? ""
           }
-        />
-        {state.errors?.salaryRange && (
-          <p className="text-sm text-red-400">{state.errors.salaryRange[0]}</p>
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="select" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="hour">hour</SelectItem>
+            <SelectItem value="month">month</SelectItem>
+            <SelectItem value="year">year</SelectItem>
+          </SelectContent>
+        </Select>
+        {state.errors?.salaryPeriod && (
+          <p className="text-sm text-red-400">{state.errors.salaryPeriod[0]}</p>
         )}
       </div>
 

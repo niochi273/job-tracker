@@ -21,6 +21,8 @@ export type ActionState = {
     workType?: string;
     location?: string;
     salaryRange?: string;
+    currency?: string;
+    salaryPeriod?: string;
     deadline?: string;
     notes?: string;
   };
@@ -35,6 +37,8 @@ export async function createApplication(
     redirect("/login");
   }
 
+  const salaryRange = formData.get("salaryRange") as string;
+
   // 1. собрать данные из формы
   const raw = {
     company: formData.get("company") as string,
@@ -43,7 +47,9 @@ export async function createApplication(
     jobUrl: formData.get("jobUrl") as string,
     workType: formData.get("workType") as string,
     location: (formData.get("location") as string) || undefined,
-    salaryRange: (formData.get("salaryRange") as string) || undefined,
+    salaryRange: salaryRange || undefined,
+    currency: (formData.get("currency") as string) || undefined,
+    salaryPeriod: (formData.get("salaryPeriod") as string) || undefined,
     deadline: (formData.get("deadline") as string) || undefined,
     notes: (formData.get("notes") as string) || undefined,
   };
@@ -70,6 +76,9 @@ export async function createApplication(
     workType: data.workType,
     location: data.location ?? null,
     salaryRange: data.salaryRange ?? null,
+    currency: data.salaryRange && data.currency ? data.currency : null,
+    salaryPeriod:
+      data.salaryRange && data.salaryPeriod ? data.salaryPeriod : null,
     deadline: data.deadline ? new Date(data.deadline) : null,
     notes: data.notes ?? null,
     appliedAt: new Date(),
@@ -109,6 +118,9 @@ export async function updateApplication(
     redirect("/login");
   }
 
+  const salaryRange = formData.get("salaryRange") as string;
+
+  // 1. собрать данные из формы
   const raw = {
     company: formData.get("company") as string,
     position: formData.get("position") as string,
@@ -116,7 +128,9 @@ export async function updateApplication(
     jobUrl: formData.get("jobUrl") as string,
     workType: formData.get("workType") as string,
     location: (formData.get("location") as string) || undefined,
-    salaryRange: (formData.get("salaryRange") as string) || undefined,
+    salaryRange: salaryRange || undefined,
+    currency: (formData.get("currency") as string) || undefined,
+    salaryPeriod: (formData.get("salaryPeriod") as string) || undefined,
     deadline: (formData.get("deadline") as string) || undefined,
     notes: (formData.get("notes") as string) || undefined,
   };
@@ -142,6 +156,9 @@ export async function updateApplication(
       workType: data.workType,
       location: data.location ?? null,
       salaryRange: data.salaryRange ?? null,
+      currency: data.salaryRange && data.currency ? data.currency : null,
+      salaryPeriod:
+        data.salaryRange && data.salaryPeriod ? data.salaryPeriod : null,
       deadline: data.deadline ? new Date(data.deadline) : null,
       notes: data.notes ?? null,
     })
