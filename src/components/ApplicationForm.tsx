@@ -37,7 +37,7 @@ export default function ApplicationForm({
   const [state, formAction, isPending] = useActionState(action, {});
 
   return (
-    <form action={formAction} className="flex flex-col gap-4 max-w-xl">
+    <form action={formAction} className="flex flex-col gap-4 max-w-xl mx-auto">
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="company">Company</Label>
         <Input
@@ -62,28 +62,52 @@ export default function ApplicationForm({
         )}
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="status">Status</Label>
-        <Select
-          name="status"
-          defaultValue={state.values?.status ?? defaultValues?.status ?? ""}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="wishlist">Wishlist</SelectItem>
-            <SelectItem value="applied">Applied</SelectItem>
-            <SelectItem value="screening">Screening</SelectItem>
-            <SelectItem value="interview">Interview</SelectItem>
-            <SelectItem value="offer">Offer</SelectItem>
-            <SelectItem value="rejected">Rejected</SelectItem>
-            <SelectItem value="withdrawn">Withdrawn</SelectItem>
-          </SelectContent>
-        </Select>
-        {state.errors?.status && (
-          <p className="text-sm text-red-400">{state.errors.status[0]}</p>
-        )}
+      <div className="flex flex-row gap-36 justify-between">
+        <div className="flex-col gap-1.5 flex w-1/3">
+          <Label htmlFor="status">Status</Label>
+          <Select
+            name="status"
+            defaultValue={state.values?.status ?? defaultValues?.status ?? ""}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="wishlist">Wishlist</SelectItem>
+              <SelectItem value="applied">Applied</SelectItem>
+              <SelectItem value="screening">Screening</SelectItem>
+              <SelectItem value="interview">Interview</SelectItem>
+              <SelectItem value="offer">Offer</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+              <SelectItem value="withdrawn">Withdrawn</SelectItem>
+            </SelectContent>
+          </Select>
+          {state.errors?.status && (
+            <p className="text-sm text-red-400">{state.errors.status[0]}</p>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1.5 w-1/3">
+          <Label htmlFor="workType">Work type</Label>
+          <Select
+            name="workType"
+            defaultValue={
+              state.values?.workType ?? defaultValues?.workType ?? ""
+            }
+          >
+            <SelectTrigger id="workType" className="w-full">
+              <SelectValue placeholder="Select work type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="remote">Remote</SelectItem>
+              <SelectItem value="hybrid">Hybrid</SelectItem>
+              <SelectItem value="onsite">Onsite</SelectItem>
+            </SelectContent>
+          </Select>
+          {state.errors?.workType && (
+            <p className="text-sm text-red-400">{state.errors.workType[0]}</p>
+          )}
+        </div>
       </div>
 
       <div className="flex flex-col gap-1.5">
@@ -97,26 +121,6 @@ export default function ApplicationForm({
         />
         {state.errors?.jobUrl && (
           <p className="text-sm text-red-400">{state.errors.jobUrl[0]}</p>
-        )}
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="workType">Work type</Label>
-        <Select
-          name="workType"
-          defaultValue={state.values?.workType ?? defaultValues?.workType ?? ""}
-        >
-          <SelectTrigger id="workType">
-            <SelectValue placeholder="Select work type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="remote">Remote</SelectItem>
-            <SelectItem value="hybrid">Hybrid</SelectItem>
-            <SelectItem value="onsite">Onsite</SelectItem>
-          </SelectContent>
-        </Select>
-        {state.errors?.workType && (
-          <p className="text-sm text-red-400">{state.errors.workType[0]}</p>
         )}
       </div>
 
@@ -139,6 +143,8 @@ export default function ApplicationForm({
             id="salaryRange"
             name="salaryRange"
             type="number"
+            min={0}
+            max={100000000}
             defaultValue={
               state.values?.salaryRange ?? defaultValues?.salaryRange ?? ""
             }
@@ -149,67 +155,77 @@ export default function ApplicationForm({
             </p>
           )}
         </div>
-        <Select
-          name="currency"
-          defaultValue={state.values?.currency ?? defaultValues?.currency ?? ""}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select currency" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="USD">
-              <div className="flex flex-row items-center gap-1">
-                <DollarSign />
-                <span>USD</span>
-              </div>
-            </SelectItem>
-            <SelectItem value="EUR">
-              <div className="flex flex-row items-center gap-1">
-                <Euro />
-                <span>EUR</span>
-              </div>
-            </SelectItem>
-            <SelectItem value="JPY">
-              <div className="flex flex-row items-center gap-1">
-                <JapaneseYen />
-                <span>JPY</span>
-              </div>
-            </SelectItem>
-            <SelectItem value="GBP">
-              <div className="flex flex-row items-center gap-1">
-                <PoundSterling />
-                <span>GBP</span>
-              </div>
-            </SelectItem>
-            <SelectItem value="RUB">
-              <div className="flex flex-row items-center gap-1">
-                <RussianRuble />
-                <span>RUB</span>
-              </div>
-            </SelectItem>
-          </SelectContent>
-        </Select>
-        {state.errors?.currency && (
-          <p className="text-sm text-red-400">{state.errors.currency[0]}</p>
-        )}
-        <Select
-          name="salaryPeriod"
-          defaultValue={
-            state.values?.salaryPeriod ?? defaultValues?.salaryPeriod ?? ""
-          }
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="select" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="hour">hour</SelectItem>
-            <SelectItem value="month">month</SelectItem>
-            <SelectItem value="year">year</SelectItem>
-          </SelectContent>
-        </Select>
-        {state.errors?.salaryPeriod && (
-          <p className="text-sm text-red-400">{state.errors.salaryPeriod[0]}</p>
-        )}
+
+        <div className="flex flex-col gap-2 items-center">
+          {state.errors?.currency && (
+            <p className="text-sm text-red-400">{state.errors.currency[0]}</p>
+          )}
+          <Select
+            name="currency"
+            defaultValue={
+              state.values?.currency ?? defaultValues?.currency ?? ""
+            }
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select currency" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="USD">
+                <div className="flex flex-row items-center gap-1">
+                  <DollarSign />
+                  <span>USD</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="EUR">
+                <div className="flex flex-row items-center gap-1">
+                  <Euro />
+                  <span>EUR</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="JPY">
+                <div className="flex flex-row items-center gap-1">
+                  <JapaneseYen />
+                  <span>JPY</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="GBP">
+                <div className="flex flex-row items-center gap-1">
+                  <PoundSterling />
+                  <span>GBP</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="RUB">
+                <div className="flex flex-row items-center gap-1">
+                  <RussianRuble />
+                  <span>RUB</span>
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex flex-col gap-2 items-center">
+          {state.errors?.salaryPeriod && (
+            <p className="text-sm text-red-400">
+              {state.errors.salaryPeriod[0]}
+            </p>
+          )}
+          <Select
+            name="salaryPeriod"
+            defaultValue={
+              state.values?.salaryPeriod ?? defaultValues?.salaryPeriod ?? ""
+            }
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select period" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="hour">hour</SelectItem>
+              <SelectItem value="month">month</SelectItem>
+              <SelectItem value="year">year</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="flex flex-col gap-1.5">
@@ -240,7 +256,11 @@ export default function ApplicationForm({
         )}
       </div>
 
-      <Button type="submit" disabled={isPending}>
+      <Button
+        className="py-5 cursor-pointer"
+        type="submit"
+        disabled={isPending}
+      >
         {isPending ? "Saving..." : submitLabel}
       </Button>
     </form>
