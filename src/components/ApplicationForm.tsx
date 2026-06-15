@@ -36,7 +36,7 @@ export default function ApplicationForm({
         <Input
           id="company"
           name="company"
-          defaultValue={defaultValues?.company ?? ""} // ← предзаполнение
+          defaultValue={state.values?.company ?? defaultValues?.company ?? ""}
         />
         {state.errors?.company && (
           <p className="text-sm text-red-400">{state.errors.company[0]}</p>
@@ -48,7 +48,7 @@ export default function ApplicationForm({
         <Input
           id="position"
           name="position"
-          defaultValue={defaultValues?.position ?? ""}
+          defaultValue={state.values?.position ?? defaultValues?.position ?? ""}
         />
         {state.errors?.position && (
           <p className="text-sm text-red-400">{state.errors.position[0]}</p>
@@ -57,7 +57,10 @@ export default function ApplicationForm({
 
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="status">Status</Label>
-        <Select name="status" defaultValue={defaultValues?.status ?? ""}>
+        <Select
+          name="status"
+          defaultValue={state.values?.status ?? defaultValues?.status ?? ""}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select status" />
           </SelectTrigger>
@@ -81,7 +84,9 @@ export default function ApplicationForm({
         <Input
           id="jobUrl"
           name="jobUrl"
-          defaultValue={defaultValues?.jobUrl ?? ""}
+          defaultValue={
+            state.values?.jobUrl ?? defaultValues?.jobUrl ?? "https://"
+          }
         />
         {state.errors?.jobUrl && (
           <p className="text-sm text-red-400">{state.errors.jobUrl[0]}</p>
@@ -90,7 +95,10 @@ export default function ApplicationForm({
 
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="workType">Work type</Label>
-        <Select name="workType" defaultValue={defaultValues?.workType ?? ""}>
+        <Select
+          name="workType"
+          defaultValue={state.values?.workType ?? defaultValues?.workType ?? ""}
+        >
           <SelectTrigger id="workType">
             <SelectValue placeholder="Select work type" />
           </SelectTrigger>
@@ -110,7 +118,7 @@ export default function ApplicationForm({
         <Input
           id="location"
           name="location"
-          defaultValue={defaultValues?.location ?? ""}
+          defaultValue={state.values?.location ?? defaultValues?.location ?? ""}
         />
         {state.errors?.location && (
           <p className="text-sm text-red-400">{state.errors.location[0]}</p>
@@ -122,7 +130,9 @@ export default function ApplicationForm({
         <Input
           id="salaryRange"
           name="salaryRange"
-          defaultValue={defaultValues?.salaryRange ?? ""}
+          defaultValue={
+            state.values?.salaryRange ?? defaultValues?.salaryRange ?? ""
+          }
         />
         {state.errors?.salaryRange && (
           <p className="text-sm text-red-400">{state.errors.salaryRange[0]}</p>
@@ -136,9 +146,10 @@ export default function ApplicationForm({
           name="deadline"
           type="date"
           defaultValue={
-            defaultValues?.deadline
+            state.values?.deadline ??
+            (defaultValues?.deadline
               ? format(defaultValues.deadline, "yyyy-MM-dd")
-              : ""
+              : "")
           }
         />
       </div>
@@ -148,7 +159,8 @@ export default function ApplicationForm({
         <Textarea
           id="notes"
           name="notes"
-          defaultValue={defaultValues?.notes ?? ""}
+          defaultValue={state.values?.notes ?? defaultValues?.notes ?? ""}
+          placeholder="Optional..."
         />
         {state.errors?.notes && (
           <p className="text-sm text-red-400">{state.errors.notes[0]}</p>

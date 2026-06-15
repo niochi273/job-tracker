@@ -13,6 +13,17 @@ import z from "zod";
 export type ActionState = {
   errors?: Record<string, string[]>;
   message?: string;
+  values?: {
+    company?: string;
+    position?: string;
+    status?: string;
+    jobUrl?: string;
+    workType?: string;
+    location?: string;
+    salaryRange?: string;
+    deadline?: string;
+    notes?: string;
+  };
 };
 
 export async function createApplication(
@@ -26,15 +37,15 @@ export async function createApplication(
 
   // 1. собрать данные из формы
   const raw = {
-    company: formData.get("company"),
-    position: formData.get("position"),
-    status: formData.get("status"),
-    jobUrl: formData.get("jobUrl"),
-    workType: formData.get("workType"),
-    location: formData.get("location") || undefined,
-    salaryRange: formData.get("salaryRange") || undefined,
-    deadline: formData.get("deadline") || undefined,
-    notes: formData.get("notes") || undefined,
+    company: formData.get("company") as string,
+    position: formData.get("position") as string,
+    status: formData.get("status") as string,
+    jobUrl: formData.get("jobUrl") as string,
+    workType: formData.get("workType") as string,
+    location: (formData.get("location") as string) || undefined,
+    salaryRange: (formData.get("salaryRange") as string) || undefined,
+    deadline: (formData.get("deadline") as string) || undefined,
+    notes: (formData.get("notes") as string) || undefined,
   };
 
   // 2. валидировать через Zod
@@ -44,6 +55,7 @@ export async function createApplication(
     return {
       errors: z.flattenError(result.error).fieldErrors,
       message: "Validation failed",
+      values: raw,
     };
   }
 
@@ -98,15 +110,15 @@ export async function updateApplication(
   }
 
   const raw = {
-    company: formData.get("company"),
-    position: formData.get("position"),
-    status: formData.get("status"),
-    jobUrl: formData.get("jobUrl"),
-    workType: formData.get("workType"),
-    location: formData.get("location") || undefined,
-    salaryRange: formData.get("salaryRange") || undefined,
-    deadline: formData.get("deadline") || undefined,
-    notes: formData.get("notes") || undefined,
+    company: formData.get("company") as string,
+    position: formData.get("position") as string,
+    status: formData.get("status") as string,
+    jobUrl: formData.get("jobUrl") as string,
+    workType: formData.get("workType") as string,
+    location: (formData.get("location") as string) || undefined,
+    salaryRange: (formData.get("salaryRange") as string) || undefined,
+    deadline: (formData.get("deadline") as string) || undefined,
+    notes: (formData.get("notes") as string) || undefined,
   };
 
   const result = applicationSchema.safeParse(raw);
@@ -115,6 +127,7 @@ export async function updateApplication(
     return {
       errors: z.flattenError(result.error).fieldErrors,
       message: "Validation failed",
+      values: raw,
     };
   }
 
