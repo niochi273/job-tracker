@@ -33,7 +33,7 @@ export default async function EditApplicationPage({
 
   return (
     <main className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Edit Application</h1>
+      <h1 className="text-2xl text-center font-bold mb-6">Edit Application</h1>
       <ApplicationForm
         action={updateWithId}
         defaultValues={app}
