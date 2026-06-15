@@ -22,6 +22,20 @@ export const statusEnum = pgEnum("status", [
 
 export const workTypeEnum = pgEnum("work_type", ["remote", "hybrid", "onsite"]);
 
+export const currencyEnum = pgEnum("currency", [
+  "USD",
+  "EUR",
+  "JPY",
+  "GBP",
+  "RUB",
+]);
+
+export const salaryPeriodEnum = pgEnum("salary_period", [
+  "hour",
+  "month",
+  "year",
+]);
+
 // таблица
 export const applications = pgTable("applications", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -35,14 +49,14 @@ export const applications = pgTable("applications", {
   deadline: timestamp("deadline"),
   jobUrl: text("job_url").notNull(),
   salaryRange: text("salary_range"),
+  currency: currencyEnum("currency"),
+  salaryPeriod: salaryPeriodEnum("salary_period"),
   location: text("location"),
   workType: workTypeEnum("work_type").notNull(),
   notes: text("notes"),
 });
 
-// типы, сгенерированные ИЗ схемы
 export type Application = typeof applications.$inferSelect;
-export type NewApplication = typeof applications.$inferInsert;
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),

@@ -21,6 +21,16 @@ export const applicationSchema = z.object({
   }),
   location: z.string().optional(),
   salaryRange: z.string().optional(),
+  currency: z
+    .enum(["USD", "EUR", "JPY", "GBP", "RUB"], {
+      message: "Please select a currency",
+    })
+    .optional(),
+  salaryPeriod: z
+    .enum(["hour", "month", "year"], {
+      message: "Please select a period",
+    })
+    .optional(),
   deadline: z.string().optional(),
   notes: z.string().optional(),
 });
