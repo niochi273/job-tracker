@@ -1,5 +1,4 @@
 import ApplicationCard from "@/components/ApplicationCard";
-import StatusBadge from "@/components/StatusBadge";
 import { db } from "@/db";
 import { applications } from "@/db/schema";
 import { auth } from "@/lib/auth";
@@ -31,13 +30,15 @@ export default async function ApplicationsPage() {
     <main className="w-full mx-auto p-6">
       <div className="flex items-center gap-3 mb-6">
         <h1 className="text-3xl font-bold">Applications</h1>
-        <div className="mt-1 border rounded-2xl py-1 px-2 flex gap-3">
-          {Object.entries(statuses).map(([status, count]) => (
-            <span className="capitalize text-sm" key={status}>
-              {status}: {count}
-            </span>
-          ))}
-        </div>
+        {Object.keys(statuses).length !== 0 && (
+          <div className="mt-1 border rounded-2xl py-1 px-2 flex gap-3">
+            {Object.entries(statuses).map(([status, count]) => (
+              <span className="capitalize text-sm" key={status}>
+                {status}: {count}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {userApplications.length === 0 ? (
