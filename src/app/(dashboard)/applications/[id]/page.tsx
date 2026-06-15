@@ -20,6 +20,7 @@ import { and, eq } from "drizzle-orm";
 import DeleteButton from "@/components/DeleteButton";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { currencySigns } from "@/lib/currency";
 
 export default async function ApplicationDetailPage({
   params,
@@ -45,14 +46,14 @@ export default async function ApplicationDetailPage({
 
   return (
     <>
-      <nav className="m-4">
-        <Link href="/applications">
-          <Button variant="outline">
-            <CircleArrowLeft /> Back
-          </Button>
-        </Link>
-      </nav>
-      <div className="mx-auto max-w-3xl w-full px-4 py-8 sm:px-2">
+      <div className="mx-auto max-w-3xl w-full px-4 py-4  sm:px-2">
+        <nav className="mb-2">
+          <Link href="/applications">
+            <Button variant="outline">
+              <CircleArrowLeft /> Back
+            </Button>
+          </Link>
+        </nav>
         <header className="flex flex-row items-center">
           <div className="flex flex-col">
             <div className="flex flex-row gap-3 items-center">
@@ -87,7 +88,9 @@ export default async function ApplicationDetailPage({
                   <span
                     className={!app.salaryRange ? "text-muted-foreground" : ""}
                   >
-                    {app.salaryRange ?? "Salary undisclosed"}
+                    {app.salaryRange && app.currency
+                      ? `${currencySigns[app.currency]}${app.salaryRange}/${app.salaryPeriod}`
+                      : "Salary undisclosed"}
                   </span>
                 </Fact>
                 <Fact icon={<Briefcase className="size-4" />}>
@@ -156,7 +159,7 @@ export default async function ApplicationDetailPage({
   );
 }
 
-function Fact({
+export function Fact({
   icon,
   children,
 }: {
