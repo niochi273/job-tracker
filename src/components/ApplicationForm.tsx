@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { type ActionState } from "@/app/actions/applications";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,6 +35,18 @@ export default function ApplicationForm({
   submitLabel = "Create application",
 }: Props) {
   const [state, formAction, isPending] = useActionState(action, {});
+  const [currency, setCurrency] = useState(
+    state.values?.currency ?? defaultValues?.currency ?? "",
+  );
+  const [workType, setWorkType] = useState(
+    state.values?.workType ?? defaultValues?.workType ?? "",
+  );
+  const [salaryPeriod, setSalaryPeriod] = useState(
+    state.values?.salaryPeriod ?? defaultValues?.salaryPeriod ?? "",
+  );
+  const [status, setStatus] = useState(
+    state.values?.status ?? defaultValues?.status ?? "",
+  );
 
   return (
     <form action={formAction} className="flex flex-col gap-4 max-w-xl mx-auto">
@@ -67,7 +79,8 @@ export default function ApplicationForm({
           <Label htmlFor="status">Status</Label>
           <Select
             name="status"
-            defaultValue={state.values?.status ?? defaultValues?.status ?? ""}
+            value={status}
+            onValueChange={(value) => setStatus(value ?? "")}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select status" />
@@ -91,9 +104,8 @@ export default function ApplicationForm({
           <Label htmlFor="workType">Work type</Label>
           <Select
             name="workType"
-            defaultValue={
-              state.values?.workType ?? defaultValues?.workType ?? ""
-            }
+            value={workType}
+            onValueChange={(value) => setWorkType(value ?? "")}
           >
             <SelectTrigger id="workType" className="w-full">
               <SelectValue placeholder="Select work type" />
@@ -160,11 +172,11 @@ export default function ApplicationForm({
           {state.errors?.currency && (
             <p className="text-sm text-red-400">{state.errors.currency[0]}</p>
           )}
+
           <Select
             name="currency"
-            defaultValue={
-              state.values?.currency ?? defaultValues?.currency ?? ""
-            }
+            value={currency}
+            onValueChange={(value) => setCurrency(value ?? "")}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select currency" />
@@ -212,9 +224,8 @@ export default function ApplicationForm({
           )}
           <Select
             name="salaryPeriod"
-            defaultValue={
-              state.values?.salaryPeriod ?? defaultValues?.salaryPeriod ?? ""
-            }
+            value={salaryPeriod}
+            onValueChange={(value) => setSalaryPeriod(value ?? "")}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select period" />
