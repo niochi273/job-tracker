@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import StatusBadge from "./StatusBadge";
 import Link from "next/link";
 import { currencySigns } from "@/lib/currency";
-import { Fact } from "@/app/(dashboard)/applications/[id]/page";
+import Fact from "@/components/Fact";
 import { Briefcase, CircleDollarSign, MapPin } from "lucide-react";
 
 export default function ApplicationCard({ app }: { app: Application }) {

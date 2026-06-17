@@ -21,6 +21,7 @@ import DeleteButton from "@/components/DeleteButton";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { currencySigns } from "@/lib/currency";
+import Fact from "@/components/Fact";
 
 export default async function ApplicationDetailPage({
   params,
@@ -156,20 +157,5 @@ export default async function ApplicationDetailPage({
         </main>
       </div>
     </>
-  );
-}
-
-export function Fact({
-  icon,
-  children,
-}: {
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex items-center gap-2.5">
-      <span className="text-muted-foreground">{icon}</span>
-      <span>{children}</span>
-    </div>
   );
 }
