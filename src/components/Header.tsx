@@ -17,6 +17,10 @@ export default async function Header() {
           Job Tracker
         </Link>
 
+        <Link href="/dashboard" className="font-bold text-lg">
+          Dashboard
+        </Link>
+
         <div className="flex items-center gap-3">
           <Link href="/applications/new">
             <Button size="sm">
