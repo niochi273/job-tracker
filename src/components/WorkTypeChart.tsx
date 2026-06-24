@@ -19,9 +19,17 @@ const chartConfig = {
 export default function WorkTypeChart({ data }: { data: WorkTypeData[] }) {
   return (
     <ChartContainer config={chartConfig} className="min-h-62.5">
-      <PieChart>
+      <PieChart className="gap-1.5">
         <ChartTooltip content={<ChartTooltipContent />} />
-        <Pie data={data} dataKey="count" nameKey="type" />
+        <Pie
+          data={data}
+          dataKey="count"
+          nameKey="type"
+          stroke="var(--background)"
+          strokeWidth={5}
+          innerRadius={20}
+          cornerRadius={10}
+        />
       </PieChart>
     </ChartContainer>
   );
