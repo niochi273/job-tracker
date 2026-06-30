@@ -8,6 +8,8 @@ import Fact from "@/components/Fact";
 import { Briefcase, CircleDollarSign, MapPin } from "lucide-react";
 
 export default function ApplicationCard({ app }: { app: Application }) {
+  console.log(app.location);
+
   return (
     <>
       <Card className="p-4 flex flex-col relative gap-3  hover:shadow transition-shadow duration-100">
@@ -32,7 +34,7 @@ export default function ApplicationCard({ app }: { app: Application }) {
             <Fact icon={<Briefcase className="size-4" />}>
               <p className="capitalize">{app.workType}</p>
             </Fact>
-            {app.location != null && (
+            {app.location && (
               <Fact icon={<MapPin className="size-4" />}>
                 <p>{app.location}</p>
               </Fact>

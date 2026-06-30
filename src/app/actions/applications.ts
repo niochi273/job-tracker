@@ -3,12 +3,14 @@
 import { db } from "@/db";
 import { applications } from "@/db/schema";
 import { auth } from "@/lib/auth";
-import { applicationSchema } from "@/lib/validations/application";
+import {
+  ApplicationInput,
+  applicationSchema,
+} from "@/lib/validations/application";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import z from "zod";
 
 export type ActionState = {
   errors?: Record<string, string[]>;
@@ -27,67 +29,6 @@ export type ActionState = {
     notes?: string;
   };
 };
-
-export async function createApplication(
-  _prevState: ActionState,
-  formData: FormData,
-): Promise<ActionState> {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) {
-    redirect("/login");
-  }
-
-  const salaryRange = formData.get("salaryRange") as string;
-
-  // 1. собрать данные из формы
-  const raw = {
-    company: formData.get("company") as string,
-    position: formData.get("position") as string,
-    status: formData.get("status") as string,
-    jobUrl: formData.get("jobUrl") as string,
-    workType: formData.get("workType") as string,
-    location: (formData.get("location") as string) || undefined,
-    salaryRange: salaryRange || undefined,
-    currency: (formData.get("currency") as string) || undefined,
-    salaryPeriod: (formData.get("salaryPeriod") as string) || undefined,
-    deadline: (formData.get("deadline") as string) || undefined,
-    notes: (formData.get("notes") as string) || undefined,
-  };
-
-  // 2. валидировать через Zod
-  const result = applicationSchema.safeParse(raw);
-
-  if (!result.success) {
-    return {
-      errors: z.flattenError(result.error).fieldErrors,
-      message: "Validation failed",
-      values: raw,
-    };
-  }
-
-  // 3. записать в базу
-  const data = result.data;
-  await db.insert(applications).values({
-    userId: session.user.id,
-    company: data.company,
-    position: data.position,
-    status: data.status,
-    jobUrl: data.jobUrl,
-    workType: data.workType,
-    location: data.location ?? null,
-    salaryRange: data.salaryRange ?? null,
-    currency: data.salaryRange && data.currency ? data.currency : null,
-    salaryPeriod:
-      data.salaryRange && data.salaryPeriod ? data.salaryPeriod : null,
-    deadline: data.deadline ? new Date(data.deadline) : null,
-    notes: data.notes ?? null,
-    appliedAt: new Date(),
-  });
-
-  // 4. обновить кеш и перенаправить
-  revalidatePath("/applications");
-  redirect("/applications");
-}
 
 export async function deleteApplication(id: string) {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -108,59 +49,64 @@ export async function deleteApplication(id: string) {
   redirect("/applications");
 }
 
-export async function updateApplication(
-  id: string,
-  prevState: ActionState,
-  formData: FormData,
-): Promise<ActionState> {
+export async function createApplicationFromData(data: ApplicationInput) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) {
     redirect("/login");
   }
 
-  const salaryRange = formData.get("salaryRange") as string;
-
-  // 1. собрать данные из формы
-  const raw = {
-    company: formData.get("company") as string,
-    position: formData.get("position") as string,
-    status: formData.get("status") as string,
-    jobUrl: formData.get("jobUrl") as string,
-    workType: formData.get("workType") as string,
-    location: (formData.get("location") as string) || undefined,
-    salaryRange: salaryRange || undefined,
-    currency: (formData.get("currency") as string) || undefined,
-    salaryPeriod: (formData.get("salaryPeriod") as string) || undefined,
-    deadline: (formData.get("deadline") as string) || undefined,
-    notes: (formData.get("notes") as string) || undefined,
-  };
-
-  const result = applicationSchema.safeParse(raw);
-
+  const result = applicationSchema.safeParse(data);
   if (!result.success) {
-    return {
-      errors: z.flattenError(result.error).fieldErrors,
-      message: "Validation failed",
-      values: raw,
-    };
+    return { error: "Validation failed" };
   }
 
-  const data = result.data;
+  const validData = result.data;
+  await db.insert(applications).values({
+    userId: session.user.id,
+    company: validData.company,
+    position: validData.position,
+    status: validData.status,
+    jobUrl: validData.jobUrl,
+    workType: validData.workType,
+    location: validData.location ?? null,
+    salaryRange: validData.salaryRange ?? null,
+    currency: validData.currency ?? null,
+    salaryPeriod: validData.salaryPeriod ?? null,
+    deadline: validData.deadline ?? null, // ← уже Date, не нужен new Date()
+    notes: validData.notes ?? null,
+    appliedAt: new Date(),
+  });
+
+  revalidatePath("/applications");
+  redirect("/applications");
+}
+
+export async function updateApplication(data: ApplicationInput, id: string) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) {
+    redirect("/login");
+  }
+
+  const result = applicationSchema.safeParse(data);
+  if (!result.success) {
+    return { error: "Validation failed" };
+  }
+
+  const validData = result.data;
   await db
     .update(applications)
     .set({
-      company: data.company,
-      position: data.position,
-      status: data.status,
-      jobUrl: data.jobUrl,
-      workType: data.workType,
-      location: data.location ?? null,
-      salaryRange: data.salaryRange ?? null,
-      currency: data.salaryRange && data.currency ? data.currency : null,
-      salaryPeriod:
-        data.salaryRange && data.salaryPeriod ? data.salaryPeriod : null,
-      deadline: data.deadline ? new Date(data.deadline) : null,
-      notes: data.notes ?? null,
+      company: validData.company,
+      position: validData.position,
+      status: validData.status,
+      jobUrl: validData.jobUrl,
+      workType: validData.workType,
+      location: validData.location ?? null,
+      salaryRange: validData.salaryRange ?? null,
+      currency: validData.currency ?? null,
+      salaryPeriod: validData.salaryPeriod ?? null,
+      deadline: validData.deadline ?? null,
+      notes: validData.notes ?? null,
     })
     .where(
       and(
@@ -170,6 +116,5 @@ export async function updateApplication(
     );
 
   revalidatePath("/applications");
-  revalidatePath(`/applications/${id}`);
-  redirect(`/applications/${id}`);
+  redirect("/applications");
 }

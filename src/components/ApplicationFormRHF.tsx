@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import type { Application } from "@/db/schema";
 import { Input } from "./ui/input";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -36,88 +37,71 @@ import { Calendar } from "./ui/calendar";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Textarea } from "./ui/textarea";
+import { applicationSchema as formSchema } from "@/lib/validations/application";
+import {
+  createApplicationFromData,
+  updateApplication,
+} from "@/app/actions/applications";
 
-const formSchema = z
-  .object({
-    company: z
-      .string()
-      .nonempty("Company must not be empty")
-      .max(21, "Company title must be at most 21 characters."),
-    position: z
-      .string()
-      .nonempty("Position must not be empty")
-      .max(35, "Position must be at most 35 characters."),
-    status: z.enum(
-      [
-        "wishlist",
-        "applied",
-        "screening",
-        "interview",
-        "offer",
-        "rejected",
-        "withdrawn",
-      ],
-      { message: "Select application status" },
-    ),
-    workType: z.enum(["remote", "onsite", "hybrid"], {
-      message: "Select work type",
-    }),
-    jobUrl: z
-      .url({ message: "The input must be a valid url" })
-      .max(100, "Url is too long"),
-    location: z.string().optional(),
-    salaryRange: z.string().regex(/^\d*$/, "Only digits allowed").optional(),
-    currency: z
-      .enum(["USD", "EUR", "JPY", "GBP", "RUB"], { message: "Select currency" })
-      .optional(),
-    salaryPeriod: z
-      .enum(["hour", "month", "year"], { message: "Select period" })
-      .optional(),
-    deadline: z.date().optional(),
-    notes: z.string().optional(),
-  })
-  .refine(
-    (data) => {
-      if (data.salaryRange) {
-        return !!data.currency && !!data.salaryPeriod;
-      }
-      return true;
-    },
-    { message: "Select currency and period for salary", path: ["currency"] },
-  );
+interface ApplicationFormRHFInterface {
+  mode: "new" | "edit";
+  id?: string;
+  defaultValues?: Application;
+}
 
-export default function ApplicationFormRHF() {
-  const [dateOpen, setDateOpen] = useState(false);
-
+export default function ApplicationFormRHF({
+  mode,
+  id,
+  defaultValues,
+}: ApplicationFormRHFInterface) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      company: "",
-      position: "",
-      status: undefined,
-      workType: undefined,
-      jobUrl: "",
-      location: "",
-      salaryRange: "",
-      currency: undefined,
-      salaryPeriod: undefined,
-      deadline: undefined,
-      notes: "",
+      company: defaultValues?.company ?? "",
+      position: defaultValues?.position ?? "",
+      status: defaultValues?.status ?? undefined,
+      workType: defaultValues?.workType ?? undefined,
+      jobUrl: defaultValues?.jobUrl ?? "",
+      location: defaultValues?.location ?? "",
+      salaryRange: defaultValues?.salaryRange ?? "",
+      currency: defaultValues?.currency ?? undefined,
+      salaryPeriod: defaultValues?.salaryPeriod ?? undefined,
+      deadline: defaultValues?.deadline ?? undefined,
+      notes: defaultValues?.notes ?? "",
     },
   });
 
+  const [dateOpen, setDateOpen] = useState(false);
   const salaryValue = useWatch({ control: form.control, name: "salaryRange" });
   const hasSalary = !!salaryValue && salaryValue.length > 0;
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log(data);
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    if (mode === "new") {
+      await createApplicationFromData(data);
+    } else if (id) {
+      await updateApplication(data, id);
+    }
+    // redirect внутри Server Action перебросит на /applications
   }
 
   return (
     <Card className="w-full sm:max-w-md mx-auto pb-0">
       <CardHeader>
-        <CardTitle className="text-lg">Create Application</CardTitle>
-        <CardDescription>Add a new application to your list.</CardDescription>
+        {mode === "new" ? (
+          <>
+            <CardTitle className="text-lg">Create Application</CardTitle>
+            <CardDescription>
+              Add a new application to your list.
+            </CardDescription>
+          </>
+        ) : (
+          <>
+            <CardTitle className="text-lg">Edit Application</CardTitle>
+            <CardDescription>
+              Change your current application data.
+            </CardDescription>
+          </>
+        )}
       </CardHeader>
       <CardContent>
         <form onSubmit={form.handleSubmit(onSubmit)} id="application-form">

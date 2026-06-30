@@ -2,8 +2,14 @@ import { z } from "zod";
 
 export const applicationSchema = z
   .object({
-    company: z.string().min(1, "Company is required"),
-    position: z.string().min(1, "Position is required"),
+    company: z
+      .string()
+      .nonempty("Company must not be empty")
+      .max(21, "Company title must be at most 21 characters."),
+    position: z
+      .string()
+      .nonempty("Position must not be empty")
+      .max(35, "Position must be at most 35 characters."),
     status: z.enum(
       [
         "wishlist",
@@ -14,34 +20,37 @@ export const applicationSchema = z
         "rejected",
         "withdrawn",
       ],
-      { message: "Please select a status" },
+      { message: "Select application status" },
     ),
-    jobUrl: z.url("Must be a valid URL"),
-    workType: z.enum(["remote", "hybrid", "onsite"], {
-      message: "Please select a work type",
+    workType: z.enum(["remote", "onsite", "hybrid"], {
+      message: "Select work type",
     }),
-    location: z.string().optional(),
-    salaryRange: z.string().optional(),
+    jobUrl: z
+      .url({ message: "The input must be a valid url" })
+      .max(100, "Url is too long"),
+    location: z
+      .string()
+      .trim()
+      .optional()
+      .transform((v) => (v === "" ? undefined : v)),
+    salaryRange: z.string().regex(/^\d*$/, "Only digits allowed").optional(),
     currency: z
-      .enum(["USD", "EUR", "JPY", "GBP", "RUB"], {
-        message: "Please select a currency",
-      })
+      .enum(["USD", "EUR", "JPY", "GBP", "RUB"], { message: "Select currency" })
       .optional(),
     salaryPeriod: z
-      .enum(["hour", "month", "year"], {
-        message: "Please select a period",
-      })
+      .enum(["hour", "month", "year"], { message: "Select period" })
       .optional(),
-    deadline: z.string().optional(),
+    deadline: z.date().optional(),
     notes: z.string().optional(),
   })
-  .refine((data) => !data.salaryRange || !!data.currency, {
-    message: "Currency is required",
-    path: ["currency"],
-  })
-  .refine((data) => !data.salaryRange || !!data.salaryPeriod, {
-    message: "Period is required",
-    path: ["salaryPeriod"],
-  });
+  .refine(
+    (data) => {
+      if (data.salaryRange) {
+        return !!data.currency && !!data.salaryPeriod;
+      }
+      return true;
+    },
+    { message: "Select currency and period for salary", path: ["currency"] },
+  );
 
 export type ApplicationInput = z.infer<typeof applicationSchema>;

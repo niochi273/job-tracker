@@ -1,11 +1,10 @@
-import ApplicationForm from "@/components/ApplicationForm";
-import { updateApplication } from "@/app/actions/applications";
 import { db } from "@/db";
 import { applications } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import ApplicationFormRHF from "@/components/ApplicationFormRHF";
 
 export default async function EditApplicationPage({
   params,
@@ -26,19 +25,12 @@ export default async function EditApplicationPage({
   });
 
   if (!app) {
-    notFound(); // чужая подача → не найдётся → 404
+    notFound();
   }
-
-  const updateWithId = updateApplication.bind(null, app.id); // ← биндим id
 
   return (
     <main className="p-6">
-      <h1 className="text-2xl text-center font-bold mb-6">Edit Application</h1>
-      <ApplicationForm
-        action={updateWithId}
-        defaultValues={app}
-        submitLabel="Save changes"
-      />
+      <ApplicationFormRHF mode="edit" id={id} defaultValues={app} />
     </main>
   );
 }
