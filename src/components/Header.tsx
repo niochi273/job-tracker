@@ -12,7 +12,7 @@ export default async function Header() {
 
   return (
     <header className="border-b">
-      <div className="max-w-4xl mx-auto px-6 py-3 flex items-center justify-between">
+      <div className="max-w-4xl px-6 py-3 flex items-center justify-between gap-2">
         <Link href="/applications" className="font-bold text-lg">
           Job Tracker
         </Link>
@@ -24,13 +24,13 @@ export default async function Header() {
         <div className="flex items-center gap-3">
           <Link href="/applications/new">
             <Button size="sm">
-              <Plus className="size-4" />
-              New Application
+              <Plus className="" />
+              <span className="sm:block hidden">New Application</span>
             </Button>
           </Link>
 
           {session && (
-            <span className="text-sm text-muted-foreground">
+            <span className="sm:block hidden text-sm text-muted-foreground">
               {session.user.name}
             </span>
           )}

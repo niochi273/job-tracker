@@ -14,9 +14,9 @@ export default function LogoutButton() {
   }
 
   return (
-    <Button variant="ghost" size="sm" onClick={handleLogout}>
+    <Button className="p-0" variant="ghost" size="sm" onClick={handleLogout}>
       <LogOut className="size-4" />
-      Log out
+      <span className="hidden sm:block">Log out</span>
     </Button>
   );
 }
