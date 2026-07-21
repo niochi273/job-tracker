@@ -55,7 +55,8 @@ export default function ApplicationFormRHF({
   defaultValues,
 }: ApplicationFormRHFInterface) {
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(formSchema) as any,
     defaultValues: {
       company: defaultValues?.company ?? "",
       position: defaultValues?.position ?? "",
