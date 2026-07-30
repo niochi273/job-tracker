@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteApplication } from "@/app/actions/applications";
+import { deleteApplication } from "@/lib/actions/applications";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 

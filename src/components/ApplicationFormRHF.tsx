@@ -41,7 +41,7 @@ import { applicationSchema as formSchema } from "@/lib/validations/application";
 import {
   createApplicationFromData,
   updateApplication,
-} from "@/app/actions/applications";
+} from "@/lib/actions/applications";
 
 interface ApplicationFormRHFInterface {
   mode: "new" | "edit";
