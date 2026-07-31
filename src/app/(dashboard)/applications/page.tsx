@@ -40,32 +40,35 @@ export default async function ApplicationsPage({
 
   return (
     <main className="w-full mx-auto p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <h1 className="text-3xl font-bold">Applications</h1>
-        <StatusFilter
-          validStatuses={userApplications.map((app) => app.status)}
-        />
-        {Object.keys(statuses).length !== 0 && status != "" && (
-          <div className="mt-1 ml-auto border rounded-2xl py-1 px-2 flex gap-3">
-            {Object.entries(statuses).map(([status, count]) => (
-              <span className="capitalize text-sm" key={status}>
-                {status}: {count}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-
       {userFilteredApplications.length === 0 ? (
         <p className="text-muted-foreground text-center py-12">
           No applications yet. Add your first one to get started.
         </p>
       ) : (
-        <div className="flex flex-col gap-3">
-          {userFilteredApplications.map((app) => (
-            <ApplicationCard key={app.id} app={app} />
-          ))}
-        </div>
+        <>
+          <div className="flex flex-wrap items-center gap-3 mb-6">
+            <h1 className="text-3xl font-bold">Applications</h1>
+            {Object.keys(statuses).length > 1 && (
+              <StatusFilter
+                validStatuses={userApplications.map((app) => app.status)}
+              />
+            )}
+            {Object.keys(statuses).length !== 0 && status != "" && (
+              <div className="mt-1 border rounded-2xl py-1 px-2 flex flex-row gap-3">
+                {Object.entries(statuses).map(([status, count]) => (
+                  <span className="capitalize text-sm" key={status}>
+                    {status}: {count}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="grid md:grid-cols-2 gap-3">
+            {userFilteredApplications.map((app) => (
+              <ApplicationCard key={app.id} app={app} />
+            ))}
+          </div>
+        </>
       )}
     </main>
   );

@@ -12,7 +12,7 @@ export default function ApplicationCard({ app }: { app: Application }) {
 
   return (
     <>
-      <Card className="p-4 flex flex-col relative gap-3  hover:shadow transition-shadow duration-100">
+      <Card className="p-4 flex flex-col relative gap-3  hover:shadow-xl transition-shadow">
         <Link href={`/applications/${app.id}`} className="cursor-default">
           <CardHeader className="flex flex-row gap-5 items-center">
             <CardTitle className="text-3xl">{app.company}</CardTitle>
@@ -47,7 +47,8 @@ export default function ApplicationCard({ app }: { app: Application }) {
           rel="noopener noreferrer"
           className="text-sm text-violet-400 hover:underline absolute bottom-3 right-6"
         >
-          View job posting →
+          <span className="hidden sm:inline">View job posting</span>
+          <span className="sm:hidden">Link</span> →
         </a>
       </Card>
     </>

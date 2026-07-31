@@ -30,7 +30,7 @@ export default function StatusFilter({
           router.push(v ? `/applications?status=${v}` : "/applications")
         }
       >
-        <SelectTrigger className="mt-1">
+        <SelectTrigger className="mt-1 mr-auto">
           <SelectValue placeholder="Status" />
         </SelectTrigger>
         <SelectContent>
